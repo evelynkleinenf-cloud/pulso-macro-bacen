@@ -8,6 +8,8 @@ O repositório inclui a base real consolidada em 60 competências e os JSON de o
 
 [Dashboard hospedado no Streamlit Community Cloud](https://pulso-macro-bacen.streamlit.app/).
 
+Material de avaliação: [entrega e links](docs/entrega_final.md) · [conferência dos requisitos](docs/checklist_avaliacao.md) · [roteiro de apresentação](docs/roteiro_apresentacao.md).
+
 ![Dashboard Pulso Macro](docs/dashboard.png)
 
 ## Execução local
