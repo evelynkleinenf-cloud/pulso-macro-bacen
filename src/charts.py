@@ -6,6 +6,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
 
+from src.analytics import correlation_input as correlation_input
 from src.analytics import correlation_matrix
 from src.config import LABELS
 
@@ -42,25 +43,31 @@ def calendar_frame(frame: pd.DataFrame) -> pd.DataFrame:
 
 
 def interest_chart(frame: pd.DataFrame, columns: tuple[str, ...]) -> go.Figure:
-    figure = px.line(
-        calendar_frame(frame),
-        x="data",
-        y=list(columns),
-        labels={"value": "Taxa (%)", "variable": "Indicador"},
-        color_discrete_sequence=PALETTE,
-    )
-    for trace in figure.data:
-        trace.update(
-            name=LABELS.get(trace.name, trace.name),
-            connectgaps=False,
-            line=dict(width=3),
-            hovertemplate="%{x|%m/%Y}<br>%{y:.2f}%<extra>%{fullData.name}</extra>",
+    data = calendar_frame(frame)
+    colors = {"selic": PALETTE[0], "ipca_12m": PALETTE[2], "juro_real_ex_post": PALETTE[1]}
+    # Composição de figuras Express: barras do real e linhas das taxas nominais.
+    figure = px.bar(data, x="data", y="juro_real_ex_post") if "juro_real_ex_post" in columns else go.Figure()
+    if "juro_real_ex_post" in columns:
+        figure.update_traces(
+            name=LABELS["juro_real_ex_post"],
+            showlegend=True,
+            marker_color=colors["juro_real_ex_post"],
+            opacity=0.55,
         )
+    lines = [column for column in columns if column != "juro_real_ex_post"]
+    if lines:
+        curve = px.line(data, x="data", y=lines, color_discrete_map=colors)
+        figure.add_traces(curve.data)
+    for trace in figure.data:
+        trace.name = LABELS.get(trace.name, trace.name)
+        trace.hovertemplate = "%{x|%m/%Y}<br>%{y:.2f}%<extra>%{fullData.name}</extra>"
+        if trace.type == "scatter":
+            trace.update(connectgaps=False, line=dict(width=3))
     figure.add_hline(y=0, line_dash="dot", line_color="#708090")
     return style(figure, "Taxa (%)")
 
 
-def exchange_chart(frame: pd.DataFrame, window: int) -> go.Figure:
+def exchange_chart(frame: pd.DataFrame, window: int, historical_mean: float | None = None) -> go.Figure:
     # Média sobre os meses do recorte, respeitando lacunas e exigindo janela completa.
     data = calendar_frame(frame)
     average = f"Média móvel de {window} meses"
@@ -75,6 +82,14 @@ def exchange_chart(frame: pd.DataFrame, window: int) -> go.Figure:
     figure.update_traces(connectgaps=False)
     figure.update_traces(line=dict(dash="dot"), selector={"name": "PTAX média mensal"})
     figure.update_traces(line=dict(dash="dash"), selector={"name": average})
+    if historical_mean is not None:
+        figure.add_hline(
+            y=historical_mean,
+            line_dash="dashdot",
+            line_color=PALETTE[3],
+            annotation_text=f"Média 2019–2023: R$ {historical_mean:.4f}",
+            annotation_position="top left",
+        )
     return style(figure, "R$/US$")
 
 
@@ -83,14 +98,21 @@ def scatter_chart(frame: pd.DataFrame) -> go.Figure:
     figure = px.scatter(
         data,
         x="dolar",
-        y="ipca_mensal",
+        y="ipca_12m",
         color="ano",
+        size="selic",
+        size_max=25,
         hover_name="competencia",
-        labels={"dolar": "PTAX mensal (R$/US$)", "ipca_mensal": "IPCA mensal (%)", "ano": "Ano"},
+        labels={
+            "dolar": "PTAX mensal (R$/US$)",
+            "ipca_12m": "IPCA 12 meses (%)",
+            "selic": "Selic (% a.a.)",
+            "ano": "Ano",
+        },
         color_discrete_sequence=PALETTE,
     )
-    figure.update_traces(marker=dict(size=10, opacity=0.85, line=dict(width=1, color="#0B1220")))
-    style(figure, "IPCA mensal (%)")
+    figure.update_traces(marker=dict(opacity=0.85, line=dict(width=1, color="#0B1220")))
+    style(figure, "IPCA em 12 meses (%)")
     figure.update_layout(hovermode="closest", xaxis_title="PTAX no fechamento mensal (R$/US$)")
     return figure
 
@@ -118,14 +140,23 @@ def inflation_chart(frame: pd.DataFrame) -> go.Figure:
     return style(figure, "IPCA mensal (%)")
 
 
-@st.cache_data(ttl=3600)
-def correlation_input(frame: pd.DataFrame, changes: bool) -> pd.DataFrame:
-    data = frame[["data", "selic", "ipca_mensal", "ipca_12m", "dolar", "ibc_br"]].copy()
-    if changes:
-        # Calcula antes de filtrar para não tratar anos omitidos como meses contíguos.
-        data[["selic", "ipca_mensal", "ipca_12m"]] = data[["selic", "ipca_mensal", "ipca_12m"]].diff()
-        data[["dolar", "ibc_br"]] = data[["dolar", "ibc_br"]].pct_change(fill_method=None) * 100
-    return data
+def lag_chart(frame: pd.DataFrame) -> go.Figure:
+    figure = px.bar(
+        frame.dropna(subset=["pearson"]),
+        x="defasagem_meses",
+        y="pearson",
+        hover_data=["pares"],
+        labels={
+            "defasagem_meses": "Inflação observada k meses depois",
+            "pearson": "Pearson r",
+            "pares": "Pares válidos",
+        },
+        color_discrete_sequence=[PALETTE[0]],
+    )
+    style(figure, "Pearson r")
+    figure.update_yaxes(range=[-1, 1])
+    figure.update_xaxes(dtick=1, title="Defasagem k (meses)")
+    return figure
 
 
 def heatmap_chart(frame: pd.DataFrame, changes: bool) -> go.Figure | None:

@@ -62,6 +62,17 @@ def correlation_matrix(frame: pd.DataFrame, columns: tuple[str, ...]) -> pd.Data
 
 
 @st.cache_data(ttl=3600)
+def correlation_input(frame: pd.DataFrame, changes: bool) -> pd.DataFrame:
+    """Transforma antes do recorte, preservando a competência anterior real."""
+    data = frame[["data", "selic", "ipca_mensal", "ipca_12m", "dolar", "ibc_br"]].copy()
+    if changes:
+        rates = ["selic", "ipca_mensal", "ipca_12m"]
+        data[rates] = data[rates].diff()
+        data[["dolar", "ibc_br"]] = data[["dolar", "ibc_br"]].pct_change(fill_method=None) * 100
+    return data
+
+
+@st.cache_data(ttl=3600)
 def export_csv(frame: pd.DataFrame) -> bytes:
     return frame.to_csv(index=False, sep=";", decimal=",", date_format="%Y-%m-%d").encode("utf-8-sig")
 

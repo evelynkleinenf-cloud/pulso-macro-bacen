@@ -14,10 +14,18 @@ from src.charts import (
     heatmap_chart,
     inflation_chart,
     interest_chart,
+    lag_chart,
     scatter_chart,
 )
 from src.config import LABELS, METADATA_PATH, SERIES
 from src.database import load_dataset
+from src.insights import (
+    above_average_windows,
+    historical_exchange_mean,
+    lagged_inflation,
+    policy_windows,
+    ranked_correlations,
+)
 
 st.set_page_config(
     page_title="Pulso Macro | BACEN", page_icon="📊", layout="wide", initial_sidebar_state="expanded"
@@ -91,12 +99,13 @@ def draw_metrics(frame: pd.DataFrame) -> None:
         f"REFERÊNCIA: {frame['data'].iloc[-1]:%m/%Y} · "
         "Deltas contra a observação anterior do recorte. Taxas em p.p.; câmbio em reais por dólar."
     )
-    cards = st.columns(4)
+    # Duas linhas mantêm valores monetários legíveis em janelas menores.
+    cards = [column for _ in range(2) for column in st.columns(2)]
     definitions = [
         ("Meta Selic", "selic", "%", "p.p.", "Meta anual no fechamento do mês (SGS 432)."),
         ("IPCA em 12 meses", "ipca_12m", "%", "p.p.", "Inflação acumulada oficial em 12 meses (SGS 13522)."),
         (
-            "Juro real ex-post · proxy",
+            "Juro real · proxy",
             "juro_real_ex_post",
             "%",
             "p.p.",
@@ -113,6 +122,153 @@ def draw_metrics(frame: pd.DataFrame) -> None:
         st.caption("Uma competência selecionada: não há observação anterior para calcular os deltas.")
     elif (frame["data"].iloc[-1].to_period("M") - frame["data"].iloc[-2].to_period("M")).n != 1:
         st.caption("O delta compara meses não consecutivos porque há uma lacuna nos anos selecionados.")
+
+
+def draw_answers(full: pd.DataFrame, frame: pd.DataFrame, changes: bool) -> None:
+    st.subheader("O que os indicadores respondem")
+    st.caption(
+        "Resultados calculados para os filtros atuais. Evidência descritiva para planejamento de cenários."
+    )
+    peak = frame.loc[frame["juro_real_ex_post"].idxmax()]
+    start, end = frame.iloc[0], frame.iloc[-1]
+    st.markdown("#### 1. Como evoluíram os juros e quando o juro real foi maior?")
+    st.write(
+        f"A meta Selic passa de {br_number(start.selic)}% em {start.data:%m/%Y} para "
+        f"{br_number(end.selic)}% em {end.data:%m/%Y}. O maior juro real retrospectivo do recorte "
+        f"é {br_number(peak.juro_real_ex_post)}% em {peak.data:%m/%Y}."
+    )
+    st.caption(
+        "Uso: comparar ambientes de custo de capital. A proxy pela meta não é o retorno efetivo de uma aplicação."
+    )
+
+    st.markdown("#### 2. Quando o dólar ficou acima da média histórica?")
+    mean = historical_exchange_mean(full)
+    windows = above_average_windows(full, frame)
+    months = int((frame["dolar"] > mean).sum())
+    st.write(
+        f"A referência fixa de 2019–2023 é R$ {br_number(mean, 4)}, média dos 60 fechamentos mensais. "
+        f"No recorte, {months} de {len(frame)} competências ficam acima dessa referência."
+    )
+    if windows.empty:
+        st.info("Nenhuma competência selecionada supera a média histórica.")
+    else:
+        st.dataframe(
+            windows.assign(inicio=windows.inicio.dt.strftime("%m/%Y"), fim=windows.fim.dt.strftime("%m/%Y"))
+            .rename(
+                columns={
+                    "inicio": "Início",
+                    "fim": "Fim",
+                    "meses": "Meses",
+                    "ptax_media": "PTAX média da janela",
+                }
+            )
+            .round(4),
+            hide_index=True,
+            width="stretch",
+        )
+    st.caption(
+        "Uso: testar a sensibilidade de despesas e receitas em dólar; média histórica não é uma previsão de câmbio."
+    )
+
+    st.markdown("#### 3. A desvalorização cambial se associa à inflação posterior?")
+    lagged = lagged_inflation(full, frame)
+    valid = lagged.dropna(subset=["pearson"])
+    if valid.empty:
+        st.info(
+            "Selecione uma janela maior: cada correlação exige ao menos 12 pares mensais e variância nas duas séries."
+        )
+    else:
+        best = valid.loc[valid.pearson.abs().idxmax()]
+        st.write(
+            f"Entre as defasagens exploradas, a maior associação em módulo é r = {br_number(best.pearson, 3)} "
+            f"em k = {int(best.defasagem_meses)} mês(es), com {int(best.pares)} pares. "
+            "k = 0 mede o mesmo mês; k > 0 compara a variação da PTAX com o IPCA mensal posterior."
+        )
+        st.plotly_chart(lag_chart(lagged), width="stretch", key="lag_plot")
+    st.dataframe(
+        lagged.rename(
+            columns={
+                "defasagem_meses": "Defasagem k (meses)",
+                "pares": "Pares válidos",
+                "pearson": "Pearson r",
+            }
+        ).round(3),
+        hide_index=True,
+        width="stretch",
+    )
+    st.caption(
+        "Δ PTAX = variação percentual do fechamento mensal; sinal positivo indica desvalorização do real. "
+        "Ambas as competências precisam estar selecionadas. Estudo exploratório de 0 a 6 meses, sem teste "
+        "de significância ou controle de autocorrelação, sazonalidade e choques comuns. A escolha do maior "
+        "|r| entre várias janelas não comprova repasse cambial nem causalidade."
+    )
+
+    st.markdown("#### 4. Como a atividade se comportou nos ciclos de juros?")
+    cycles = policy_windows(full, frame)
+    st.dataframe(
+        cycles.assign(
+            inicio=cycles.inicio.dt.strftime("%m/%Y"),
+            fim=cycles.fim.dt.strftime("%m/%Y"),
+            base_ibc=cycles.base_ibc.dt.strftime("%m/%Y"),
+        )
+        .rename(
+            columns={
+                "ciclo": "Ciclo",
+                "inicio": "Início",
+                "fim": "Fim",
+                "meses": "Meses",
+                "selic_inicial": "Selic inicial (%)",
+                "selic_final": "Selic final (%)",
+                "base_ibc": "Base IBC-Br",
+                "variacao_ibc_pct": "Variação IBC-Br (%)",
+            }
+        )
+        .round(2),
+        hide_index=True,
+        width="stretch",
+    )
+    st.caption(
+        "Ciclo = direção da última mudança mensal da meta, incluindo meses de manutenção. "
+        "O IBC-Br compara o fechamento final à competência anterior ao início da janela; em janeiro/2019, "
+        "usa a primeira observação disponível. Lacunas nos filtros separam janelas. "
+        "Uso: contextualizar cenários de demanda; a comparação não isola o efeito dos juros."
+    )
+
+    st.markdown("#### 5. Quais pares apresentam maior correlação?")
+    ranking = ranked_correlations(full, frame, changes)
+    mode = "variações mensais" if changes else "níveis"
+    if ranking.empty:
+        st.info("Não há pares suficientes com variância para ordenar as correlações.")
+    else:
+        labels = {name: definition["label"] for name, definition in SERIES.items()}
+        top = ranking.iloc[0]
+        st.write(
+            f"Em {mode}, o maior |r| é entre {labels[top.variavel_1]} e {labels[top.variavel_2]}: r = {br_number(top.pearson, 3)}, com {int(top.pares)} pares."
+        )
+        st.dataframe(
+            ranking.head(5)
+            .assign(
+                variavel_1=lambda data: data.variavel_1.map(labels),
+                variavel_2=lambda data: data.variavel_2.map(labels),
+            )
+            .rename(
+                columns={
+                    "variavel_1": "Indicador 1",
+                    "variavel_2": "Indicador 2",
+                    "pearson": "Pearson r",
+                    "pares": "Pares válidos",
+                }
+            )
+            .round(3),
+            hide_index=True,
+            width="stretch",
+        )
+    st.caption(
+        "Ordenação por |r|, preservando o sinal. Nas variações, taxas usam p.p.; câmbio e IBC-Br usam %. Tendências comuns podem elevar correlações em níveis."
+    )
+    st.info(
+        "Decisão apoiada: priorizar testes de sensibilidade de juros, câmbio e demanda no planejamento. O painel não prevê preços nem recomenda investimentos."
+    )
 
 
 def methodology() -> None:
@@ -178,6 +334,9 @@ def main() -> None:
     st.title("Pulso Macro")
     st.markdown("Juros, inflação, câmbio e atividade econômica do Brasil em uma visão integrada.")
     st.caption(
+        "Pergunta orientadora: como os ciclos macroeconômicos se relacionam e o que observar ao planejar cenários de custos e demanda?"
+    )
+    st.caption(
         f"{frame['data'].min():%m/%Y} → {frame['data'].max():%m/%Y} · "
         f"{len(frame)} competências selecionadas · Fonte em uso: {loaded.source}"
     )
@@ -185,8 +344,8 @@ def main() -> None:
         st.info(loaded.notice, icon="ℹ️")
     draw_metrics(frame)
     st.write("")
-    overview, activity, relations, dataset, methods = st.tabs(
-        ["Panorama", "Preços & atividade", "Relações", "Base de dados", "Metodologia"]
+    overview, activity, relations, dataset, methods, answers = st.tabs(
+        ["Panorama", "Preços & atividade", "Relações", "Base de dados", "Metodologia", "Respostas de negócio"]
     )
     with overview:
         st.subheader("O ciclo dos juros e da inflação")
@@ -198,8 +357,14 @@ def main() -> None:
         else:
             st.info("Selecione uma curva na barra lateral para exibir este gráfico.")
         st.subheader("O dólar ao longo do período")
-        st.caption(f"PTAX de venda: fechamento, média mensal e média móvel de {window} meses do fechamento.")
-        st.plotly_chart(exchange_chart(frame, window), width="stretch", key="dolar_plot")
+        st.caption(
+            f"Fechamento, média mensal e média móvel de {window} meses. Linha horizontal: média fixa dos 60 fechamentos de 2019–2023."
+        )
+        st.plotly_chart(
+            exchange_chart(frame, window, historical_exchange_mean(loaded.frame)),
+            width="stretch",
+            key="dolar_plot",
+        )
         if len(frame) < window:
             st.caption(
                 "O recorte é menor que a janela escolhida; a média móvel ainda não possui observações suficientes."
@@ -214,7 +379,7 @@ def main() -> None:
         left, right = st.columns(2)
         with left:
             st.subheader("Câmbio × inflação")
-            st.caption("Cada ponto é uma competência, com a cor indicando o ano.")
+            st.caption("PTAX × IPCA 12 meses. Cor indica o ano; tamanho indica a meta Selic.")
             st.plotly_chart(scatter_chart(frame), width="stretch", key="scatter_plot")
         with right:
             st.subheader("Mapa de correlações")
@@ -264,6 +429,8 @@ def main() -> None:
                     st.json(metadata)
             except (OSError, ValueError):
                 logger.warning("Metadados locais indisponíveis.")
+    with answers:
+        draw_answers(loaded.frame, frame, changes)
     st.divider()
     st.caption("BACEN / SGS · Projeto Final de Analytics Financeiro · Série histórica 2019–2023")
 

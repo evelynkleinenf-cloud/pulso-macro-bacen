@@ -19,11 +19,12 @@ def open_app():
     return app
 
 
-def test_default_dashboard_has_metrics_tabs_and_six_charts():
+def test_default_dashboard_has_metrics_answers_and_analytical_charts():
     app = open_app()
     assert len(app.metric) == 4
-    assert len(app.tabs) == 5
-    assert len(app.get("plotly_chart")) == 6
+    assert len(app.tabs) == 6
+    assert app.tabs[-1].label == "Respostas de negócio"
+    assert len(app.get("plotly_chart")) == 7
     assert app.metric[0].value == "11,75%"
     assert len(app.get("download_button")) == 1
 
@@ -73,4 +74,4 @@ def test_chart_controls_and_disjoint_years():
     app.radio(key="correlacao").set_value("Níveis").run()
     assert not app.exception
     assert len(app.dataframe[0].value) == 24
-    assert len(app.get("plotly_chart")) == 6
+    assert len(app.get("plotly_chart")) == 7
