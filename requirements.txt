@@ -1,0 +1,9 @@
+streamlit==1.66.1
+pandas==3.0.6
+numpy==2.5.4; python_version >= "3.12"
+numpy>=2.3,<2.4; python_version < "3.12"
+plotly==6.9.0
+requests==2.34.2
+SQLAlchemy==2.1.6
+psycopg[binary]==3.3.6
+nbformat==5.11.1

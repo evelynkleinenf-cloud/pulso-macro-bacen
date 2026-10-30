@@ -1,0 +1,60 @@
+{
+  "source": "Banco Central do Brasil / SGS",
+  "generated_at_utc": "2026-10-28T22:43:45.107994+00:00",
+  "period": {
+    "start": "2019-01-01",
+    "end": "2023-12-31"
+  },
+  "rows": 60,
+  "sha256_csv": "0d6ea74c2e118296af8009c882804115f99f3de1fe4eb52fe501e0c010199641",
+  "raw_observations": {
+    "selic": 2222,
+    "ipca_mensal": 60,
+    "ipca_12m": 60,
+    "dolar": 1255,
+    "ibc_br": 60
+  },
+  "series": {
+    "selic": {
+      "code": 432,
+      "label": "Meta Selic",
+      "unit": "% a.a.",
+      "frequency": "diária"
+    },
+    "ipca_mensal": {
+      "code": 433,
+      "label": "IPCA mensal",
+      "unit": "% a.m.",
+      "frequency": "mensal"
+    },
+    "ipca_12m": {
+      "code": 13522,
+      "label": "IPCA em 12 meses",
+      "unit": "%",
+      "frequency": "mensal"
+    },
+    "dolar": {
+      "code": 1,
+      "label": "Dólar PTAX venda",
+      "unit": "R$/US$",
+      "frequency": "diária"
+    },
+    "ibc_br": {
+      "code": 24364,
+      "label": "IBC-Br com ajuste sazonal",
+      "unit": "índice SGS",
+      "frequency": "mensal"
+    }
+  },
+  "methodology": {
+    "monthly_date": "Último dia do mês; não representa a data de divulgação.",
+    "selic": "Última meta do mês (% a.a.). Histórico auxiliar desde dezembro/2017.",
+    "dolar": "Última PTAX de venda observada no mês (R$/US$).",
+    "dolar_media": "Média aritmética das PTAX de venda observadas no mês.",
+    "selic_acumulada_12m": "Produto diário de (1 + meta/100)^(1/365) nos 12 meses anteriores, calendário ACT/365.",
+    "juro_real_ex_post": "100 * ((1 + selic_acumulada_12m/100) / (1 + ipca_12m/100) - 1). Proxy pela meta, não retorno overnight.",
+    "ibc_br": "SGS 24364 com ajuste sazonal; série revisável. Unidade conservada conforme o SGS.",
+    "missing": "Sem interpolação; apenas meta Selic carregada para dias sem nova observação.",
+    "vintage": "Snapshot atual de séries históricas revisáveis, não uma base em tempo real de 2019–2023."
+  }
+}
