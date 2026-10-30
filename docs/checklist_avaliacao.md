@@ -19,7 +19,7 @@ Conferência e adequações em **30/10/2026**, com base no PDF oficial de 15 pá
 | README nos 14 tópicos | p. 11 | Estruturado; falta completar URL do vídeo após gravação |
 | Trello público com print | p. 11–12 | Link e docs/trello.png no README; criado nas adequações, sem histórico retroativo |
 | Cards com nome/especificações e WIP 1 | p. 14 | Nome completo, descrições e movimentações reais; histórico anterior não é reconstituído |
-| GitFlow | p. 12 e 14 | Feature analítica integrada por PR em develop; documentação em feature própria; conferir PRs finais para main e master |
+| GitFlow | p. 12 e 14 | PRs reais #1–#4 integrados; main é padrão estável; develop e duas branches de funcionalidades preservadas; master sincronizada para o deploy |
 | Vídeo individual de 3–5 minutos | p. 2–3 e 12–14 | Roteiro corrigido; **gravação e URL pendentes da autora** |
 | Autoria, LinkedIn e referências | p. 11 | Nome completo e LinkedIn confirmados; fontes e assistência técnica identificadas |
 | Entrega dos três links no AVA | p. 3 | **Pendente da autora**, até 03/11/2026 às 22h |
@@ -51,7 +51,10 @@ Conferência e adequações em **30/10/2026**, com base no PDF oficial de 15 pá
 
 ## Pendências finais
 
-1. Concluir e verificar as integrações finais e o dashboard atualizado.
-2. A autora gravar e hospedar o pitch, enviar sua URL e conferir os acessos.
-3. Completar o campo de vídeo no README/texto de entrega antes da submissão.
-4. Submeter GitHub, Streamlit e vídeo no AVA e congelar alterações até a nota.
+1. A autora gravar e hospedar o pitch, enviar sua URL e conferir os acessos.
+2. Completar o campo de vídeo no README/texto de entrega antes da submissão.
+3. Submeter GitHub, Streamlit e vídeo no AVA e congelar alterações até a nota.
+
+## Validação final em produção
+
+Em 30/10/2026, o CI final de master (run 41125081225) foi aprovado e os arquivos de main/master foram comparados como idênticos. A aplicação carregou PostgreSQL, seis abas e as novas respostas de negócio. A seleção de 2020 apresentou 12 competências e o CSV baixado foi conferido com 12 linhas e dez colunas; o reset restaurou 60 meses. A autora confirmou que o endereço principal mostra a nova aba. A reinicialização da aplicação resolveu um módulo antigo em memória após a atualização, sem excluir a implantação. O registro desta conferência está em uma feature de validação separada.
