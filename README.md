@@ -6,6 +6,8 @@ O repositório inclui a base real consolidada em 60 competências e os JSON de o
 
 [Repositório no GitHub](https://github.com/evelynkleinenf-cloud/pulso-macro-bacen).
 
+[Dashboard hospedado no Streamlit Community Cloud](https://pulso-macro-bacen.streamlit.app/).
+
 ![Dashboard Pulso Macro](docs/dashboard.png)
 
 ## Execução local
@@ -128,7 +130,7 @@ O modelo de segredos está preparado para PostgreSQL no Supabase. No projeto Sup
 
 O Session Pooler atende conexões IPv4 na porta `5432`. O usuário padrão nesse modo segue o formato `postgres.REFERENCIA_DO_PROJETO`; o host deve ser copiado do painel, porque não pode ser deduzido apenas pela região. O aplicativo mantém `st.connection("postgresql", type="sql")`, `st.secrets`, SSL obrigatório e o fallback CSV.
 
-O banco deste projeto foi provisionado no Supabase em **30/10/2026**, com o nome **pulso-macro-bacen**, na região **South America (São Paulo)**, em uma organização Free. A conexão real pelo Session Pooler foi validada com TLS, os 60 meses do CSV foram carregados e conferidos com a tabela `public.indicadores_macro`, e o RLS foi confirmado como habilitado. As credenciais estão somente no arquivo privado `.streamlit/secrets.toml`.
+O banco deste projeto foi provisionado no Supabase em **30/10/2026**, com o nome **pulso-macro-bacen**, na região **South America (São Paulo)**, em uma organização Free. A conexão real pelo Session Pooler foi validada com TLS, os 60 meses do CSV foram carregados e conferidos com a tabela `public.indicadores_macro`, e o RLS foi confirmado como habilitado. As credenciais ficam no arquivo privado `.streamlit/secrets.toml` e nos Secrets da hospedagem, fora do GitHub.
 
 O limite de cinco segundos é aplicado com `SET LOCAL statement_timeout` no início de cada transação SQLAlchemy. Isso mantém o limite efetivo mesmo quando o pooler não preserva opções de inicialização da conexão. Um teste real confirmou o cancelamento de uma consulta lenta e a recuperação da conexão para a carga e leitura seguintes.
 
@@ -149,6 +151,16 @@ A rotina cria `indicadores_macro` se necessário e executa UPSERT pela chave pri
 A consulta do aplicativo tem parâmetros de data, cache de uma hora, limite de conexão de cinco segundos e limite de execução de cinco segundos por comando. Falhas de conexão, de credenciais, de consulta ou de qualidade da tabela acionam o CSV. Mensagens técnicas com credenciais não são exibidas na interface. Ao implantar em outro ambiente, configure os segredos desse ambiente e valide novamente a conectividade com o Supabase.
 
 No Streamlit Community Cloud, selecione `app.py` como entrada e copie o conteúdo do arquivo de segredos para as configurações de Secrets do aplicativo. Versione o CSV de contingência junto com o código. Nunca envie o arquivo real de segredos ao GitHub.
+
+### Hospedagem no Streamlit Community Cloud
+
+O app está vinculado ao repositório `evelynkleinenf-cloud/pulso-macro-bacen`, branch `master`, com entrada em `app.py` e Python 3.14. Os Secrets do Supabase são configurados na hospedagem, separados do código versionado. O endereço escolhido é `https://pulso-macro-bacen.streamlit.app/`.
+
+A validação online confirmou os 60 meses com PostgreSQL como fonte, quatro KPIs, seis gráficos, alteração de filtros e restauração. O download do recorte de 2020 a 2023 foi conferido com 48 linhas e dez colunas. [Captura do painel online](docs/dashboard-online.png).
+
+O PyArrow está fixado em `24.0.0` para manter o ambiente local e o CI alinhados à versão utilizada pela hospedagem, evitando depender de uma substituição automática durante o deploy. Referência técnica: [Apache Arrow — inicialização em threads no Streamlit](https://github.com/apache/arrow/issues/50471).
+
+O acesso de visitantes é definido em **App settings → Sharing**. A visibilidade do app é independente da visibilidade do repositório; manter o código privado permite controlar o acesso do avaliador ao GitHub separadamente do acesso ao dashboard.
 
 ## Interface e critérios de avaliação
 
