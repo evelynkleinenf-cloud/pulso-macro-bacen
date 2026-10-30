@@ -25,7 +25,7 @@ Conferência em **30/10/2026**. Base: requisitos do prompt inicial da autora. O 
 | Arquitetura modular e estrutura solicitada | Atendido | `app.py`, `src/etl.py`, `src/database.py`, dados, notebook, configuração e dependências; módulos e testes adicionais |
 | Git e documentação de execução | Implementado; avaliação qualitativa depende da rubrica | Histórico real, README, `.gitignore`, `.gitattributes` e GitHub Actions |
 | Dashboard hospedado | Atendido | [Aplicação pública](https://pulso-macro-bacen.streamlit.app/) com Supabase e contingência local |
-| Acesso do avaliador ao código privado | Pendente | É necessário informar a conta GitHub do avaliador e confirmar o nível de acesso efetivamente disponível |
+| Acesso do avaliador ao código | Atendido | Repositório público por solicitação da autora; API do GitHub confirmou acesso sem autenticação |
 
 ## Evidências verificadas
 
@@ -35,7 +35,7 @@ Conferência em **30/10/2026**. Base: requisitos do prompt inicial da autora. O 
 - Código da aplicação e módulos revisados sem caminhos pessoais absolutos.
 - Validação automatizada do código: **26 testes aprovados**, lint e formatação. [CI do commit de implantação `69d8ccc`](https://github.com/evelynkleinenf-cloud/pulso-macro-bacen/actions/runs/41112273251), com jobs aprovados em Python 3.11 e 3.14.
 - Validação online: fonte PostgreSQL, quatro KPIs, seis gráficos, filtro, reset e download. [Captura](dashboard-online.png).
-- Aplicativo público; código GitHub privado. São permissões independentes.
+- Aplicativo e código GitHub públicos. O repositório retornou HTTP 200 sem autenticação após a mudança de visibilidade em 30/10/2026.
 
 ## Pontos para a avaliação
 
@@ -43,8 +43,8 @@ Conferência em **30/10/2026**. Base: requisitos do prompt inicial da autora. O 
 2. O histórico existente contém dois commits de implementação/implantação antes dos documentos de entrega. Ele deve ser apresentado como realmente ocorreu; não há garantia de pontuação máxima em evolução Git.
 3. O juro real é uma **proxy retrospectiva pela meta Selic capitalizada**, não o retorno efetivo da Selic overnight. A metodologia está explícita no painel e no README.
 4. A base contém séries históricas revisáveis extraídas em 2026. Não representa o conjunto de informações disponível em tempo real em 2019–2023.
-5. Concluir e confirmar o acesso do avaliador ao repositório antes de enviar o trabalho. O link privado, isoladamente, não concede acesso.
+5. O avaliador pode abrir o repositório público sem convite, incluindo README, notebook e histórico. As credenciais não fazem parte dos arquivos versionados.
 
 ## Resultado da conferência
 
-Os requisitos técnicos explícitos do prompt estão implementados. A entrega depende da identificação do avaliador para acesso ao GitHub e da comparação com a rubrica oficial, caso ela contenha exigências adicionais. Esta análise não atribui uma nota nem substitui a avaliação docente.
+Os requisitos técnicos explícitos do prompt estão implementados e o acesso público ao GitHub foi confirmado. Falta comparar a entrega com a rubrica oficial, caso ela contenha exigências adicionais. Esta análise não atribui uma nota nem substitui a avaliação docente.

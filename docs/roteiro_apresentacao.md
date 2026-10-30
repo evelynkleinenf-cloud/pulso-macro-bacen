@@ -4,7 +4,7 @@
 
 ## Preparação antes da apresentação
 
-Abra o [dashboard](https://pulso-macro-bacen.streamlit.app/), o README, o notebook e o GitHub Actions. Restaure os filtros. Confirme o acesso ao código com a conta do avaliador. Para os quatro cartões ficarem legíveis, use uma janela ampla; se necessário, ajuste o zoom do navegador.
+Abra o [dashboard](https://pulso-macro-bacen.streamlit.app/), o README, o notebook e o GitHub Actions. Restaure os filtros. O repositório é público e o avaliador pode abrir o código sem login. Para os quatro cartões ficarem legíveis, use uma janela ampla; se necessário, ajuste o zoom do navegador.
 
 Prepare uma cópia local extraída do pacote de entrega, sem `.streamlit/secrets.toml`, para demonstrar o fallback. Instale as dependências antecipadamente e rode `python -m streamlit run app.py --server.port 8502` na raiz dessa cópia, com o ambiente virtual ativado. Ela deve indicar **CSV local · BACEN/SGS**. Não altere o banco nem os Secrets da hospedagem durante a apresentação.
 

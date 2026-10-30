@@ -162,7 +162,7 @@ A validação online confirmou os 60 meses com PostgreSQL como fonte, quatro KPI
 
 O PyArrow está fixado em `24.0.0` para manter o ambiente local e o CI alinhados à versão utilizada pela hospedagem, evitando depender de uma substituição automática durante o deploy. Referência técnica: [Apache Arrow — inicialização em threads no Streamlit](https://github.com/apache/arrow/issues/50471).
 
-O acesso de visitantes é definido em **App settings → Sharing**. A visibilidade do app é independente da visibilidade do repositório; manter o código privado permite controlar o acesso do avaliador ao GitHub separadamente do acesso ao dashboard.
+O dashboard e o repositório GitHub estão públicos. O avaliador pode consultar código, notebook, dados e histórico sem convite. As credenciais permanecem fora do GitHub, no arquivo local protegido e nos Secrets da hospedagem. O acesso de visitantes ao dashboard é definido em **App settings → Sharing**, independentemente da visibilidade do repositório.
 
 ## Interface e critérios de avaliação
 
