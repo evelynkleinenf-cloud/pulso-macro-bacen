@@ -1,53 +1,52 @@
-# Entrega final — Pulso Macro
+# Entrega oficial — Pulso Macro
 
-**Projeto:** Analytics Financeiro com BACEN / SGS
+**Autora:** Evelyn Klein dos Santos
 
-**Linha temática:** 3 — Macroeconomia, Taxas de Juros & Indicadores Econômicos
+**LinkedIn:** https://www.linkedin.com/in/evelyn-klein-993228158/
 
-**Período:** janeiro de 2019 a dezembro de 2023
+**Linha:** 3 — BACEN/SGS. **Recorte:** 2019–2023.
 
-**Conta responsável no GitHub:** `evelynkleinenf-cloud`
+## Os três links exigidos no AVA
 
-## Links para a entrega
-
-| Material | Link | Acesso |
+| Material | URL | Estado |
 |---|---|---|
-| Dashboard em produção | [Abrir Pulso Macro](https://pulso-macro-bacen.streamlit.app/) | Público, sem login |
-| Código e histórico Git | [Repositório pulso-macro-bacen](https://github.com/evelynkleinenf-cloud/pulso-macro-bacen) | Público, sem login ou convite |
-| Instruções e metodologia | [README](https://github.com/evelynkleinenf-cloud/pulso-macro-bacen/blob/master/README.md) | Mesmo acesso do repositório |
-| Análise exploratória | [Notebook executado](https://github.com/evelynkleinenf-cloud/pulso-macro-bacen/blob/master/notebooks/eda_exploratoria.ipynb) | Mesmo acesso do repositório |
-| Dados consolidados | [CSV mensal](https://github.com/evelynkleinenf-cloud/pulso-macro-bacen/blob/master/data/macro_mensal.csv) | Mesmo acesso do repositório; também disponível no painel |
-| Testes automatizados | [GitHub Actions](https://github.com/evelynkleinenf-cloud/pulso-macro-bacen/actions) | Mesmo acesso do repositório |
-| Conferência de requisitos | [Checklist](checklist_avaliacao.md) | Incluído nos documentos do projeto |
-| Apresentação | [Roteiro de demonstração](roteiro_apresentacao.md) | Incluído nos documentos do projeto |
+| GitHub público | https://github.com/evelynkleinenf-cloud/pulso-macro-bacen | Acesso sem login; main é a branch de entrega após integração |
+| Streamlit público | https://pulso-macro-bacen.streamlit.app/ | Implantação preservada em master e sincronizada com a versão aprovada |
+| Vídeo individual (3–5 minutos) | **Pendente de gravação e URL** | A autora precisa gravar e hospedar |
 
-## Texto pronto para colar no ambiente de entrega
+Trello público (link e print também no README): https://trello.com/b/zkvMJBOe/pulso-macro-projeto-final-bi-evelyn-klein .
 
-> Apresento o Pulso Macro, projeto da Linha 3 de Analytics Financeiro, desenvolvido em Python e Streamlit para analisar juros, inflação, câmbio e atividade econômica do Brasil entre 2019 e 2023.
+![Quadro individual do projeto](trello.png)
+
+O repositório público dispensa convite para consulta do professor. O quadro foi criado para as adequações de 30/10/2026; o trabalho anterior é identificado sem histórico retroativo.
+
+## Texto para colar no AVA após completar a URL do vídeo
+
+> Projeto: Pulso Macro — Analytics Financeiro BACEN/SGS.
 >
-> Dashboard: https://pulso-macro-bacen.streamlit.app/
+> Autora: Evelyn Klein dos Santos.
 >
-> Repositório: https://github.com/evelynkleinenf-cloud/pulso-macro-bacen
+> GitHub: https://github.com/evelynkleinenf-cloud/pulso-macro-bacen
 >
-> O projeto utiliza as séries SGS 432, 433, 13522, 1 e 24364 do Banco Central, consolidadas em 60 competências mensais. Inclui ETL reproduzível, banco PostgreSQL no Supabase, contingência automática em CSV, cache, filtros com reset, quatro KPIs com deltas, seis gráficos Plotly Express e exportação da base filtrada. O notebook, a metodologia e os testes estão no repositório.
+> Aplicação: https://pulso-macro-bacen.streamlit.app/
 >
-> O dashboard e o repositório são públicos e podem ser consultados sem login ou convite.
+> Vídeo (3–5 minutos): INSERIR A URL REAL APÓS A GRAVAÇÃO.
+>
+> O projeto consolida cinco séries oficiais em 60 competências mensais de 2019–2023. Inclui ETL reproduzível, Supabase com fallback CSV, cache, filtros/reset, quatro KPIs, gráficos Plotly, notebook executado e respostas às cinco perguntas de negócio. O README contém metodologia, dicionário, resultados, limitações e Trello público com screenshot.
 
-## Acesso do avaliador — concluído
+## Conferência antes de submeter
 
-O repositório foi tornado público em **30/10/2026**, por solicitação da autora. A visibilidade pública e a resposta HTTP 200 foram confirmadas na API do GitHub sem autenticação. Não é necessário informar uma conta de avaliador nem enviar convite para consultar o material.
+- [x] Repositório e dashboard públicos.
+- [x] Nome e LinkedIn confirmados.
+- [x] Trello separado do quadro de exercícios, com quatro colunas, cards identificados e especificações.
+- [x] Gráficos e análises locais adequados à Linha 3, com 32 testes aprovados.
+- [ ] Confirmar integração final em main e sincronização do deploy em master, com CI aprovado.
+- [ ] Gravar, hospedar e conferir vídeo de três a cinco minutos; inserir a URL em README e neste documento.
+- [ ] Conferir acessos em janela sem login.
+- [ ] Submeter os três links na tarefa das Semanas 13 e 14 do AVA.
 
-O avaliador pode abrir o repositório, README, notebook, base e histórico Git pelos links acima. A publicação não inclui o arquivo real de Secrets, ambiente virtual ou credenciais. O dashboard também permanece público.
+**Prazo do PDF:** 03/11/2026 às 22h. A última atualização do repositório conta para a entrega. Não modificar o projeto depois de submetê-lo, até receber a nota. A autora informou que ainda não submeteu os links.
 
-Se a instituição permitir entrega por arquivo, o pacote ZIP sem credenciais pode ser anexado como complemento. Ele não contém a pasta `.git`; consulte o histórico pelo GitHub.
+O ZIP é complementar, sem Secrets, ambiente virtual ou pasta .git; não substitui os três links e o histórico no GitHub. Não fornecer acesso administrativo do Supabase ou credenciais ao avaliador.
 
-## Antes de enviar
-
-- [ ] Preencher nome, turma, disciplina e demais campos exigidos no ambiente da instituição.
-- [ ] Comparar a entrega com o enunciado oficial; a conferência atual usa o prompt fornecido.
-- [x] Confirmar acesso público ao GitHub, sem login ou convite.
-- [ ] Abrir o dashboard e conferir a indicação da fonte dos dados.
-- [ ] Anexar o pacote sem credenciais, se o ambiente aceitar ou exigir arquivos.
-- [ ] Conferir prazo, formato e eventual duração da apresentação no enunciado.
-
-Não incluir senha, arquivo real de Secrets, chaves de API ou acesso administrativo do Supabase no material enviado.
+Materiais de apoio: [checklist oficial](checklist_avaliacao.md) e [roteiro de até cinco minutos](roteiro_apresentacao.md).
