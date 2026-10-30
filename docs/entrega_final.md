@@ -40,9 +40,9 @@ O repositório público dispensa convite para consulta do professor. O quadro fo
 - [x] Nome e LinkedIn confirmados.
 - [x] Trello separado do quadro de exercícios, com quatro colunas, cards identificados e especificações.
 - [x] Gráficos e análises locais adequados à Linha 3, com 32 testes aprovados.
-- [ ] Confirmar integração final em main e sincronização do deploy em master, com CI aprovado.
+- [x] Integração final em main e sincronização do deploy em master, com CI final aprovado (run 41125081225).
 - [ ] Gravar, hospedar e conferir vídeo de três a cinco minutos; inserir a URL em README e neste documento.
-- [ ] Conferir acessos em janela sem login.
+- [x] Materiais públicos verificados sem login; endereço principal e nova aba confirmados pela autora. Filtro, download e reset testados em produção.
 - [ ] Submeter os três links na tarefa das Semanas 13 e 14 do AVA.
 
 **Prazo do PDF:** 03/11/2026 às 22h. A última atualização do repositório conta para a entrega. Não modificar o projeto depois de submetê-lo, até receber a nota. A autora informou que ainda não submeteu os links.
