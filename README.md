@@ -2,14 +2,14 @@
 
 Aplicação da **Linha 3 — Inteligência Macroeconômica e Indicadores Financeiros**, com cinco séries oficiais do Banco Central, consolidadas em **60 competências de janeiro/2019 a dezembro/2023**. O painel relaciona juros, inflação, câmbio e atividade para apoiar planejamento de cenários de custos, receitas e demanda.
 
-**Responsável acadêmica:** Evelyn Klein dos Santos.
+**Responsável:** Evelyn Klein dos Santos.
 
 | Acesso | Link |
 |---|---|
 | Aplicação pública | [Pulso Macro no Streamlit](https://pulso-macro-bacen.streamlit.app/) |
 | Código e histórico | [GitHub](https://github.com/evelynkleinenf-cloud/pulso-macro-bacen) |
 | Gestão individual | [Trello público](https://trello.com/b/zkvMJBOe/pulso-macro-projeto-final-bi-evelyn-klein) |
-| Vídeo individual de 3–5 minutos | **Pendente de gravação e envio da URL pela autora** |
+| Vídeo individual de 3–5 minutos | **Pendente de gravação e envio da URL** |
 | LinkedIn da autora | [Evelyn Klein dos Santos](https://www.linkedin.com/in/evelyn-klein-993228158/) |
 
 A versão de entrega fica em `main`; `develop` integra funcionalidades. A branch `master` é preservada e sincronizada com a versão aprovada para manter a implantação existente no Streamlit. Consulte o histórico de PRs para verificar integrações reais.
@@ -218,8 +218,6 @@ GitFlow adotado para as adequações reais: branches `codex/feature-*` partem de
 - [Conferência da rubrica oficial](docs/checklist_avaliacao.md).
 - [Roteiro do pitch de até cinco minutos](docs/roteiro_apresentacao.md).
 
-**Entrega oficial:** GitHub, Streamlit e vídeo no AVA, tarefa Semanas 13 e 14, até **03/11/2026 às 22h**, conforme o enunciado. Trello com link e print neste README. Após submeter, não alterar o repositório até a nota. O ZIP é complementar e não substitui os três links.
-
 ## 13. Testes e reprodução da análise
 
 ```powershell
@@ -235,7 +233,7 @@ O notebook importa os mesmos módulos, funciona a partir da raiz ou de `notebook
 
 ## 14. Autoria e referências
 
-**Evelyn Klein dos Santos**, responsável acadêmica pelo projeto individual. LinkedIn: [Evelyn Klein dos Santos](https://www.linkedin.com/in/evelyn-klein-993228158/). Vídeo: **aguardando gravação individual e URL**. Houve assistência de programação e revisão por IA; a autora deve revisar, compreender e conseguir explicar código, decisões e interpretações na apresentação.
+**Evelyn Klein dos Santos**, responsável pelo projeto. LinkedIn: [Evelyn Klein dos Santos](https://www.linkedin.com/in/evelyn-klein-993228158/).
 
 Referências técnicas efetivamente utilizadas:
 
@@ -245,4 +243,3 @@ Referências técnicas efetivamente utilizadas:
 - [Supabase — conexão PostgreSQL](https://supabase.com/docs/guides/database/connecting-to-postgres).
 - [Pandas](https://pandas.pydata.org/docs/), [NumPy](https://numpy.org/doc/), [Plotly Express](https://plotly.com/python/plotly-express/), [SQLAlchemy](https://docs.sqlalchemy.org/) e [psycopg](https://www.psycopg.org/psycopg3/docs/).
 - [Apache Arrow — discussão de inicialização em threads no Streamlit](https://github.com/apache/arrow/issues/50471); PyArrow fixado em 24.0.0, alinhado à hospedagem.
-- Enunciado oficial do Projeto Final do Módulo 2, fornecido pela estudante e usado na conferência da rubrica. Não foi republicado o PDF do professor neste repositório.
